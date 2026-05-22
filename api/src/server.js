@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 const webOrigin = process.env.WEB_ORIGIN || "http://localhost:5173";
 const webBasePath = (process.env.WEB_BASE_PATH || "/tools").replace(/\/$/, "");
-const defaultOpenRouterModel = process.env.OPENROUTER_MODEL || "openrouter/free";
+const defaultOpenRouterModel = process.env.OPENROUTER_MODEL || "openai/gpt-oss-120b:free";
 
 app.use(cors({ origin: webOrigin }));
 app.use(express.json({ limit: "1mb" }));
@@ -191,26 +191,110 @@ function buildFiveSecondPrompt(inputText, sourceType) {
 Hero / first-screen text:
 """${inputText.slice(0, 4500)}"""
 
-Return markdown only.
+Return one valid JSON object only. Do not wrap it in markdown. Do not add commentary before or after it.
 
-Start with:
-Clarity score: N/100
-**5-second verdict:** one vivid sentence that captures the main clarity problem or strength.
-
-Then use exactly these sections, with 1-3 bullets each:
-## What is unclear?
-## Priority fixes
-## Rewrite example
+Use exactly this shape:
+{
+  "clarityScore": 0,
+  "verdict": "one vivid sentence that captures the main clarity problem or strength",
+  "whatIsUnclear": ["1-3 bullets"],
+  "priorityFixes": [
+    {
+      "element": "headline | subheadline | CTA | proof | audience | offer | pricing | risk reversal | next step",
+      "problem": "specific problem",
+      "change": "specific change"
+    }
+  ],
+  "rewriteExample": {
+    "headline": "paste-ready headline",
+    "subheadline": "paste-ready subheadline",
+    "cta": "paste-ready CTA",
+    "proofRiskLine": "optional paste-ready proof or risk line"
+  }
+}
 
 Rules for the last two sections:
-- In "Priority fixes", each bullet must name one exact element to fix: headline, subheadline, CTA, proof, audience, offer, pricing, risk reversal, or next step.
-- Each "Priority fixes" bullet must include both the problem and the concrete change, using this shape: **Element:** problem -> change.
-- In "Rewrite example", write a complete first-screen version the founder can paste into a draft: **Headline:**, **Subheadline:**, **CTA:**, and optionally **Proof/risk line:**.
+- In "priorityFixes", each object must name one exact element to fix: headline, subheadline, CTA, proof, audience, offer, pricing, risk reversal, or next step.
+- Each "priorityFixes" object must include both the problem and the concrete change.
+- In "rewriteExample", write a complete first-screen version the founder can paste into a draft: headline, subheadline, CTA, and optionally proof/risk line.
 - If the source does not include enough product detail to write a confident line, use a bracketed placeholder like [specific outcome], [target customer], or [proof point] instead of inventing facts.
 
 Score based on how quickly a cold visitor can understand the offer, audience, value, and next action. Make the bullets specific enough that the founder can rewrite the hero immediately. Use plain English. Be direct. Avoid vague advice like "make it clearer", "add more value", or "improve the CTA" unless you also say exactly what to write. If a section cannot be answered from the text, say what is missing.`
     }
   ];
+}
+
+function stripJsonFence(content) {
+  return String(content)
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+}
+
+function parseFiveSecondJson(content) {
+  const cleaned = stripJsonFence(content);
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+
+    if (start === -1 || end === -1 || end <= start) {
+      throw new Error("Model did not return a JSON object.");
+    }
+
+    return JSON.parse(cleaned.slice(start, end + 1));
+  }
+}
+
+function toStringList(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 3);
+}
+
+function normalizeFiveSecondResult(value) {
+  const rawScore = Number(value?.clarityScore);
+  const clarityScore = Number.isFinite(rawScore)
+    ? Math.min(100, Math.max(0, Math.round(rawScore)))
+    : null;
+  const priorityFixes = Array.isArray(value?.priorityFixes)
+    ? value.priorityFixes
+        .map((item) => ({
+          element: String(item?.element || "").trim(),
+          problem: String(item?.problem || "").trim(),
+          change: String(item?.change || "").trim()
+        }))
+        .filter((item) => item.element && item.problem && item.change)
+        .slice(0, 3)
+    : [];
+  const rewriteExample = value?.rewriteExample || {};
+  const normalized = {
+    clarityScore,
+    verdict: String(value?.verdict || "").trim(),
+    whatIsUnclear: toStringList(value?.whatIsUnclear),
+    priorityFixes,
+    rewriteExample: {
+      headline: String(rewriteExample.headline || "").trim(),
+      subheadline: String(rewriteExample.subheadline || "").trim(),
+      cta: String(rewriteExample.cta || "").trim(),
+      proofRiskLine: String(rewriteExample.proofRiskLine || "").trim()
+    }
+  };
+
+  if (normalized.clarityScore === null) {
+    throw new Error("Model JSON is missing clarityScore.");
+  }
+
+  if (!normalized.verdict) {
+    throw new Error("Model JSON is missing verdict.");
+  }
+
+  return normalized;
 }
 
 function extractClarityScore(content) {
@@ -356,6 +440,7 @@ app.post("/api/tools/landing-page-first-5-seconds-test", async (req, res) => {
         model: defaultOpenRouterModel,
         messages: buildFiveSecondPrompt(inputText, sourceType),
         temperature: 0.2,
+        response_format: { type: "json_object" },
         max_tokens: 1000
       })
     });
@@ -370,8 +455,9 @@ app.post("/api/tools/landing-page-first-5-seconds-test", async (req, res) => {
       return;
     }
 
-    const result = payload.choices?.[0]?.message?.content || "";
-    const score = extractClarityScore(result);
+    const rawResult = payload.choices?.[0]?.message?.content || "";
+    const result = normalizeFiveSecondResult(parseFiveSecondJson(rawResult));
+    const score = result.clarityScore;
     const savedResult = await saveToolResult({
       req,
       tool: {
@@ -388,11 +474,12 @@ app.post("/api/tools/landing-page-first-5-seconds-test", async (req, res) => {
         model: payload.model || defaultOpenRouterModel,
         sourceText: inputText.slice(0, 1200),
         score,
-        result
+        result,
+        rawResult
       },
       share: {
         title: "👀 Landing Page First 5 Seconds Test",
-        summary: extractVerdict(result) || "Landing page clarity result",
+        summary: result.verdict || "Landing page clarity result",
         url: null,
         imagePath: null
       }

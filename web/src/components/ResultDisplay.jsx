@@ -15,7 +15,7 @@ function renderInlineMarkdown(text) {
 
 export function MarkdownResult({ content }) {
   const nodes = [];
-  const lines = content
+  const lines = String(content || "")
     .split("\n")
     .filter((line) => !/^clarity score\s*:/i.test(line.trim()));
   let paragraph = [];
@@ -81,6 +81,59 @@ export function MarkdownResult({ content }) {
 
         return <p key={nodeIndex}>{renderInlineMarkdown(node.text)}</p>;
       })}
+    </div>
+  );
+}
+
+function StructuredResult({ content }) {
+  const rewriteExample = content.rewriteExample || {};
+  const rewriteItems = [
+    ["Headline", rewriteExample.headline],
+    ["Subheadline", rewriteExample.subheadline],
+    ["CTA", rewriteExample.cta],
+    ["Proof/risk line", rewriteExample.proofRiskLine]
+  ].filter(([, value]) => value);
+
+  return (
+    <div className="markdown-result">
+      {content.verdict && <p><strong>5-second verdict:</strong> {content.verdict}</p>}
+
+      <h3>What is unclear?</h3>
+      {content.whatIsUnclear?.length > 0 ? (
+        <ul>
+          {content.whatIsUnclear.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No unclear points returned.</p>
+      )}
+
+      <h3>Priority fixes</h3>
+      {content.priorityFixes?.length > 0 ? (
+        <ul>
+          {content.priorityFixes.map((fix, index) => (
+            <li key={index}>
+              <strong>{fix.element}:</strong> {fix.problem} {"->"} {fix.change}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No priority fixes returned.</p>
+      )}
+
+      <h3>Rewrite example</h3>
+      {rewriteItems.length > 0 ? (
+        <ul>
+          {rewriteItems.map(([label, value]) => (
+            <li key={label}>
+              <strong>{label}:</strong> {value}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No rewrite example returned.</p>
+      )}
     </div>
   );
 }
@@ -233,13 +286,19 @@ export function SharePanel({ result }) {
 }
 
 export function ResultDisplay({ result, showShare = true }) {
+  const isStructuredResult = result.result && typeof result.result === "object";
+
   return (
     <div className="tool-result">
       <div className="section-title-row">
         <h2>The verdict</h2>
       </div>
       <ScoreGauge score={result.score} />
-      <MarkdownResult content={result.result} />
+      {isStructuredResult ? (
+        <StructuredResult content={result.result} />
+      ) : (
+        <MarkdownResult content={result.result} />
+      )}
       {showShare && <SharePanel result={result} />}
     </div>
   );
