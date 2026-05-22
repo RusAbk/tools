@@ -182,7 +182,7 @@ function buildFiveSecondPrompt(inputText, sourceType) {
     {
       role: "system",
       content:
-        "You are a sharp landing page clarity reviewer. Simulate what a cold visitor understands in the first 5 seconds. Start with an engaging, specific verdict that makes the user want to keep reading. Keep the rest short, concrete, and practical. Do not invent missing product details."
+        "You are a sharp landing page clarity reviewer. Simulate what a cold visitor understands in the first 5 seconds. Start with an engaging, specific verdict that makes the user want to keep reading. Give concrete rewrite guidance, not generic CRO advice. Do not invent missing product details; if a detail is missing, name the missing detail and show a fill-in placeholder."
     },
     {
       role: "user",
@@ -202,9 +202,16 @@ Then use exactly these sections, with 1-3 bullets each:
 ## Who is it for?
 ## Why should I care?
 ## What is unclear?
-## What should be rewritten?
+## Priority fixes
+## Rewrite example
 
-Score based on how quickly a cold visitor can understand the offer, audience, value, and next action. Make the bullets specific enough that the founder can rewrite the hero immediately. Use plain English. Be direct. If a section cannot be answered from the text, say what is missing.`
+Rules for the last two sections:
+- In "Priority fixes", each bullet must name one exact element to fix: headline, subheadline, CTA, proof, audience, offer, pricing, risk reversal, or next step.
+- Each "Priority fixes" bullet must include both the problem and the concrete change, using this shape: **Element:** problem -> change.
+- In "Rewrite example", write a complete first-screen version the founder can paste into a draft: **Headline:**, **Subheadline:**, **CTA:**, and optionally **Proof/risk line:**.
+- If the source does not include enough product detail to write a confident line, use a bracketed placeholder like [specific outcome], [target customer], or [proof point] instead of inventing facts.
+
+Score based on how quickly a cold visitor can understand the offer, audience, value, and next action. Make the bullets specific enough that the founder can rewrite the hero immediately. Use plain English. Be direct. Avoid vague advice like "make it clearer", "add more value", or "improve the CTA" unless you also say exactly what to write. If a section cannot be answered from the text, say what is missing.`
     }
   ];
 }
@@ -352,7 +359,7 @@ app.post("/api/tools/landing-page-first-5-seconds-test", async (req, res) => {
         model: defaultOpenRouterModel,
         messages: buildFiveSecondPrompt(inputText, sourceType),
         temperature: 0.2,
-        max_tokens: 700
+        max_tokens: 1000
       })
     });
 

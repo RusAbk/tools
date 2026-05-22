@@ -16,6 +16,18 @@ npm run dev
 
 Set `OPENROUTER_API_KEY` in `api/.env` before using the OpenRouter proxy.
 
+## Backend deploy
+
+The API is plain Node.js and does not produce a build artifact. On a VPS you can run:
+
+```bash
+npm ci
+npm run build --workspace api
+npm run start --workspace api
+```
+
+If you are already inside the `api` directory, use `npm run build` and `npm run start`.
+
 ## GitHub Pages
 
 The repository deploys only the Vite frontend from `web` to GitHub Pages. The workflow is
