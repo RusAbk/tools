@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ResultDisplay } from "./ResultDisplay.jsx";
+import { apiUrl } from "../utils/api.js";
 import { absoluteAppUrl } from "../utils/paths.js";
 
 function normalizeSavedResult(record) {
@@ -46,7 +47,7 @@ export function LandingPageFirstFiveSecondsTest() {
       setError("");
 
       try {
-        const response = await fetch(`/api/results/${savedResultId}`);
+        const response = await fetch(apiUrl(`/api/results/${savedResultId}`));
         const payload = await response.json();
 
         if (!response.ok) {
@@ -87,7 +88,7 @@ export function LandingPageFirstFiveSecondsTest() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/tools/landing-page-first-5-seconds-test", {
+      const response = await fetch(apiUrl("/api/tools/landing-page-first-5-seconds-test"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

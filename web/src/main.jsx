@@ -5,10 +5,12 @@ import App from "./App.jsx";
 import { ThemeProvider } from "./theme.jsx";
 import "./styles.css";
 
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider>
-      <BrowserRouter basename="/tools">
+      <BrowserRouter basename={routerBasename}>
         <App />
       </BrowserRouter>
     </ThemeProvider>

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
+    "postbuild": "node scripts/copy-spa-fallback.js",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
