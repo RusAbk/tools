@@ -233,6 +233,16 @@ Rules for the last two sections:
 - In "rewriteExample", write a complete first-screen version the founder can paste into a draft: headline, subheadline, CTA, and optionally proof/risk line.
 - If the source does not include enough product detail to write a confident line, use a bracketed placeholder like [specific outcome], [target customer], or [proof point] instead of inventing facts.
 
+Scoring rubric:
+- 0-20: a cold visitor cannot tell what is being offered, who it is for, or what action to take.
+- 21-40: the category is guessable, but the offer, audience, value, or CTA are mostly missing or contradictory.
+- 41-60: the offer is understandable, but important audience, outcome, proof, or next-step details are weak.
+- 61-80: the core offer and value are clear, with fixable issues in specificity, proof, language, or CTA.
+- 81-100: a cold visitor can quickly understand the offer, audience, outcome, proof, and next action.
+- Do not give a score below 20 if the visitor can identify the product category and primary offer.
+- Do not give a score below 40 if the visitor can identify the product category, target outcome, and a plausible next action.
+- If the core offer is clear but language mix, weak proof, or vague audience hurts conversion, score it in the 55-75 range unless there are severe contradictions.
+
 Score based on how quickly a cold visitor can understand the offer, audience, value, and next action. Make the bullets specific enough that the founder can rewrite the hero immediately. Use plain English. Be direct. Avoid vague advice like "make it clearer", "add more value", or "improve the CTA" unless you also say exactly what to write. If a section cannot be answered from the text, say what is missing.`
     }
   ];
@@ -271,9 +281,37 @@ function toStringList(value) {
   return value.map((item) => String(item || "").trim()).filter(Boolean).slice(0, 3);
 }
 
+function calibrateClarityScore(score, value) {
+  const verdict = String(value?.verdict || "").toLowerCase();
+  const allText = [
+    value?.verdict,
+    ...(Array.isArray(value?.whatIsUnclear) ? value.whatIsUnclear : []),
+    ...(Array.isArray(value?.priorityFixes)
+      ? value.priorityFixes.flatMap((item) => [item?.problem, item?.change])
+      : [])
+  ]
+    .join(" ")
+    .toLowerCase();
+  const saysCoreOfferClear =
+    /\b(core|main|primary)\s+(offer|value proposition)\s+(is\s+)?clear\b/.test(verdict) ||
+    /\b(product|category|offer)\s+(is\s+)?(clear|understandable|identifiable)\b/.test(verdict);
+  const hasModerateIssues =
+    /\b(lacks?|unclear|diluted|generic|weak|vague|confusing|cognitive load|specific)\b/.test(allText);
+
+  if (score < 55 && saysCoreOfferClear && hasModerateIssues) {
+    return 55;
+  }
+
+  if (score < 40 && saysCoreOfferClear) {
+    return 40;
+  }
+
+  return score;
+}
+
 function normalizeFiveSecondResult(value) {
   const rawScore = Number(value?.clarityScore);
-  const clarityScore = Number.isFinite(rawScore)
+  const boundedScore = Number.isFinite(rawScore)
     ? Math.min(100, Math.max(0, Math.round(rawScore)))
     : null;
   const priorityFixes = Array.isArray(value?.priorityFixes)
@@ -288,7 +326,7 @@ function normalizeFiveSecondResult(value) {
     : [];
   const rewriteExample = value?.rewriteExample || {};
   const normalized = {
-    clarityScore,
+    clarityScore: boundedScore === null ? null : calibrateClarityScore(boundedScore, value),
     verdict: String(value?.verdict || "").trim(),
     whatIsUnclear: toStringList(value?.whatIsUnclear),
     priorityFixes,
