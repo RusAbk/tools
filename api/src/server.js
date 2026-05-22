@@ -198,9 +198,6 @@ Clarity score: N/100
 **5-second verdict:** one vivid sentence that captures the main clarity problem or strength.
 
 Then use exactly these sections, with 1-3 bullets each:
-## What is this?
-## Who is it for?
-## Why should I care?
 ## What is unclear?
 ## Priority fixes
 ## Rewrite example
