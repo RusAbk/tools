@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">Text Counter cover</title>
+  <desc id="desc">A simple text document with counting badges.</desc>
+  <rect width="640" height="420" fill="#e9f7f5"/>
+  <rect x="74" y="54" width="492" height="312" rx="18" fill="#fffdf9" stroke="#8fc8c2" stroke-width="4"/>
+  <rect x="116" y="104" width="246" height="18" rx="9" fill="#087a73"/>
+  <rect x="116" y="152" width="396" height="12" rx="6" fill="#b8d9d5"/>
+  <rect x="116" y="184" width="348" height="12" rx="6" fill="#b8d9d5"/>
+  <rect x="116" y="216" width="376" height="12" rx="6" fill="#b8d9d5"/>
+  <rect x="116" y="278" width="92" height="44" rx="10" fill="#151b22"/>
+  <rect x="232" y="278" width="92" height="44" rx="10" fill="#151b22"/>
+  <rect x="348" y="278" width="92" height="44" rx="10" fill="#151b22"/>
+  <text x="144" y="307" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" font-weight="700">Aa</text>
+  <text x="257" y="307" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" font-weight="700">123</text>
+  <text x="376" y="307" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" font-weight="700">min</text>
+</svg>

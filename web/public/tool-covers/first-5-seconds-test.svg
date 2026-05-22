@@ -1,0 +1,15 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="420" rx="28" fill="#111315"/>
+  <rect x="54" y="54" width="532" height="312" rx="18" fill="#FBFBF9"/>
+  <rect x="86" y="88" width="168" height="14" rx="7" fill="#5EEAD4"/>
+  <rect x="86" y="130" width="292" height="24" rx="8" fill="#1F2933"/>
+  <rect x="86" y="166" width="246" height="24" rx="8" fill="#1F2933"/>
+  <rect x="86" y="216" width="328" height="12" rx="6" fill="#AAA39A"/>
+  <rect x="86" y="240" width="282" height="12" rx="6" fill="#AAA39A"/>
+  <rect x="86" y="286" width="122" height="38" rx="8" fill="#0F766E"/>
+  <rect x="392" y="100" width="150" height="190" rx="16" fill="#E7E2DA"/>
+  <circle cx="467" cy="160" r="42" fill="#5EEAD4"/>
+  <path d="M443 160h48M467 136v48" stroke="#111315" stroke-width="10" stroke-linecap="round"/>
+  <rect x="382" y="302" width="170" height="36" rx="10" fill="#0F766E" fill-opacity=".14"/>
+  <text x="405" y="326" fill="#0F766E" font-family="Arial, sans-serif" font-size="18" font-weight="700">5 seconds</text>
+</svg>

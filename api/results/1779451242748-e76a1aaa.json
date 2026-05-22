@@ -1,0 +1,49 @@
+{
+  "id": "1779451242748-e76a1aaa",
+  "createdAt": "2026-05-22T12:00:42.748Z",
+  "tool": {
+    "slug": "landing-page-first-5-seconds-test",
+    "name": "👀 Landing Page First 5 Seconds Test"
+  },
+  "request": {
+    "ip": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "device": {
+      "type": "desktop",
+      "os": "Linux",
+      "browser": "Chrome"
+    },
+    "browser": "Chrome",
+    "language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+    "referrer": "http://localhost:5173/tools/landing-page-first-5-seconds-test",
+    "location": {
+      "country": null,
+      "region": null,
+      "city": null,
+      "timezone": null
+    },
+    "headers": {
+      "host": "localhost:4000",
+      "origin": "http://localhost:5173",
+      "forwardedFor": null
+    }
+  },
+  "input": {
+    "mode": "url",
+    "url": "https://backspaceoddity.com/ai-skills/",
+    "extractedText": "Backspace Oddity × AI Skills Conference 2026 \nBook a pilot conversation →\nBackspace Oddity \n× \nYou saw what's possible. Now it's time to build\nWe made sure you have somewhere to start — introducing five products with tangible outcomes, fixed scope and price\nBook a pilot conversation → \nFive entry points for AI transformation\nWe built these five products for people who left the conference inspired — and came back to the office not quite sure what to do with that. We partnered with Backspace Oddity — specialists in AI deployment for marketing and GTM teams — to design them together. Fixed scope, fixed price. Pick the one that fits.\nProduct 1\nWorkflow transformation\nSee details\nProduct 2\nOperating model\nSee details\nProduct 3\nCompany brain\nSee details\nProduct 4\nContent production\nSee details\nProduct 5\nCreative strategy for all\nSee details\nWhat this actually looks like\n01\nFind the entry point. Show a real result\nWe look at where the team loses the most, pick one workflow, and rebuild it.\nProcess audit — where time and effort disappear\nOne workflow redesigned with AI built in\nWorking result in production by end of stage\n02\nRebuild the workflows that run marketing every day\nWe take 2–3 high-frequency processes and redesign them with AI built in.\n2–3 workflows redesigned — built together with the team\nDocumentation and working instructions for each\nSeveral people running the new way independently by end of stage\n03\nTurn the pilot into a system\nTwo options to close — pick what fits.\nOption A: hand off\nDocumented system the team can maintain and grow independently\nProtocols for adding new workflows without external help\nOption B: stay on\nBackspace Oddity as an ongoing AI-native execution partner\nDelivery for work that's cheaper to delegate than to build internally\nAll agents and automations run on Acris.ai\n— our platform for context graphs and agentic workflows, with 2,500+ integrations: Slack, Notion, Salesforce, GitHub, and everything the team already uses.\n€50,000\nfixed · 6–8 weeks · one function\nAI service costs (OpenAI, Anthropic, etc.) connect directly to the client's accounts — not included.\nBook a pilot conversation\nThe team behind the work\nYegor Korobeynikov\nFounder & CEO\nYegor is the founder and CEO of Backspace Oddity, an AI-native GTM agency for B2B companies. He previously co-founded Superabundance (a venture studio for AI startups), led the RealtimeBoard-to-Miro rebrand and then the in-house Miro brand studio, and ran marketing at Sidekick Browser — acquired by Perplexity, now Comet.\nAnna Barinova\nProduct Development Lead\nAnna leads product development at Backspace Oddity. She has shipped 50+ products from scratch, built cross-functional processes inside teams of 35 or more, and architected design systems that scaled across products with up to 14M monthly active users.\nSiraj Hasanov\nAI Engineering Lead · Founder, Acris.ai\nSiraj is the AI Engineering Lead at Backspace Oddity and the founder of Acris.ai. Previously a software engineer at Meta. Full-stack development, AI systems, web platforms. He builds production-grade infrastructure — from AI tools to high-performance websites.\nHow a conversation starts\nPick a slot that works for you. It's a 30-minute conversation — not a sales pitch, just one specific question about your situation.\nWe usually start by asking which one workflow you'd most want to change. That tends to shape everything else.\nBackspace Oddity \n× \n© 2026 Backspace Oddity"
+  },
+  "output": {
+    "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning-20260428:free",
+    "sourceText": "Backspace Oddity × AI Skills Conference 2026 \nBook a pilot conversation →\nBackspace Oddity \n× \nYou saw what's possible. Now it's time to build\nWe made sure you have somewhere to start — introducing five products with tangible outcomes, fixed scope and price\nBook a pilot conversation → \nFive entry points for AI transformation\nWe built these five products for people who left the conference inspired — and came back to the office not quite sure what to do with that. We partnered with Backspace Oddity — specialists in AI deployment for marketing and GTM teams — to design them together. Fixed scope, fixed price. Pick the one that fits.\nProduct 1\nWorkflow transformation\nSee details\nProduct 2\nOperating model\nSee details\nProduct 3\nCompany brain\nSee details\nProduct 4\nContent production\nSee details\nProduct 5\nCreative strategy for all\nSee details\nWhat this actually looks like\n01\nFind the entry point. Show a real result\nWe look at where the team loses the most, pick one workflow, and rebuild it.\nProcess audit — where time and effort disappear\nOne workflow redesigned with AI built in\nWorking result in production by end of stage\n02\nRebuild the workflows that run marketing every day\nWe take 2–3 hi",
+    "score": null,
+    "result": ""
+  },
+  "share": {
+    "title": "👀 Landing Page First 5 Seconds Test",
+    "summary": "Landing page clarity result",
+    "url": "http://localhost:5173/results/1779451242748-e76a1aaa",
+    "imagePath": "/api/results/1779451242748-e76a1aaa/share-image.svg",
+    "sharePagePath": "/api/results/1779451242748-e76a1aaa/share"
+  }
+}
