@@ -151,7 +151,7 @@ function wrapText(text, maxLength) {
 }
 
 export function buildShareImageSvg(record) {
-  const score = record.output?.score;
+  const score = record.output?.score ?? record.output?.result?.clarityScore;
   const title = (record.share?.title || record.tool?.name || "Tool result").replace("👀", "").trim();
   const verdict = record.share?.summary || "Saved tool result";
   const scoreText = typeof score === "number" ? `${score}/100` : "Saved";

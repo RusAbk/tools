@@ -24,6 +24,20 @@ function webUrl(path = "/") {
   return `${webOrigin}${webBasePath}${normalizedPath}`;
 }
 
+function apiUrl(req, path = "/") {
+  const configuredOrigin = process.env.API_ORIGIN?.replace(/\/$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (configuredOrigin) {
+    return `${configuredOrigin}${normalizedPath}`;
+  }
+
+  const protocol = req.headers["x-forwarded-proto"] || req.protocol || "http";
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
+
+  return `${protocol}://${host}${normalizedPath}`;
+}
+
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
@@ -367,8 +381,9 @@ app.get("/api/results/:id/share", async (req, res) => {
   }
 
   const resultUrl = webUrl(`/results/${record.id}`);
-  const imageUrl = `${webOrigin}/api/results/${record.id}/share-image.svg`;
-  const title = `${record.output?.score ?? "Saved"}/100 Landing Page Clarity Result`;
+  const imageUrl = apiUrl(req, `/api/results/${record.id}/share-image.svg`);
+  const score = record.output?.score ?? record.output?.result?.clarityScore;
+  const title = `${score ?? "Saved"}/100 Landing Page Clarity Result`;
   const description = record.share?.summary || "Saved landing page clarity result.";
 
   res.type("html").send(`<!doctype html>

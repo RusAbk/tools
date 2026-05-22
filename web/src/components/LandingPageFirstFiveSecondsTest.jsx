@@ -8,6 +8,7 @@ function normalizeSavedResult(record) {
   const output = record.output || {};
   const share = record.share || {};
   const resultUrl = absoluteAppUrl(`/results/${record.id}`);
+  const score = output.score ?? output.result?.clarityScore;
 
   return {
     id: record.id,
@@ -15,7 +16,7 @@ function normalizeSavedResult(record) {
     resultUrl,
     model: output.model,
     sourceText: output.sourceText,
-    score: output.score,
+    score,
     result: output.result,
     share: {
       ...share,

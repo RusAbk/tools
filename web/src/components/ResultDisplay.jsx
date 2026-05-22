@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { apiUrl } from "../utils/api.js";
 import { absoluteAppUrl } from "../utils/paths.js";
 
 function renderInlineMarkdown(text) {
@@ -139,17 +140,20 @@ function StructuredResult({ content }) {
 }
 
 export function ScoreGauge({ score }) {
-  if (typeof score !== "number") {
+  const numericScore = Number(score);
+
+  if (!Number.isFinite(numericScore)) {
     return null;
   }
 
-  const label = score >= 80 ? "Clear" : score >= 60 ? "Needs tightening" : "Hard to understand";
+  const label =
+    numericScore >= 80 ? "Clear" : numericScore >= 60 ? "Needs tightening" : "Hard to understand";
 
   return (
-    <div className="score-gauge" style={{ "--score": score }}>
+    <div className="score-gauge" style={{ "--score": numericScore }}>
       <div className="score-gauge-top">
         <span>Clarity score</span>
-        <strong>{score}/100</strong>
+        <strong>{numericScore}/100</strong>
       </div>
       <div className="score-track" aria-hidden="true">
         <div className="score-fill" />
@@ -166,16 +170,15 @@ export function ScoreGauge({ score }) {
 export function SharePanel({ result }) {
   const [copyState, setCopyState] = useState("");
   const share = result.share || {};
+  const score = result.score ?? result.result?.clarityScore;
   const resultUrl =
     result.resultId || result.id
       ? absoluteAppUrl(`/results/${result.resultId || result.id}`)
       : share.url || result.resultUrl || window.location.href;
-  const socialShareUrl = share.sharePagePath
-    ? `${window.location.origin}${share.sharePagePath}`
-    : resultUrl;
-  const imageUrl = share.imagePath ? `${window.location.origin}${share.imagePath}` : "";
+  const socialShareUrl = share.sharePagePath ? apiUrl(share.sharePagePath) : resultUrl;
+  const imageUrl = share.imagePath ? apiUrl(share.imagePath) : "";
   const postText = useMemo(() => {
-    const scoreText = typeof result.score === "number" ? `${result.score}/100` : "pretty mysterious";
+    const scoreText = Number.isFinite(Number(score)) ? `${Number(score)}/100` : "pretty mysterious";
     const summary = share.summary || "My hero section got a quick clarity check.";
 
     return [
@@ -183,7 +186,7 @@ export function SharePanel({ result }) {
       summary,
       `Посмотри мой результат и попробуй свой лендинг тут: ${resultUrl}`
     ].join("\n");
-  }, [result.score, resultUrl, share.summary]);
+  }, [score, resultUrl, share.summary]);
 
   async function copy(value, label) {
     await navigator.clipboard.writeText(value);
@@ -287,13 +290,14 @@ export function SharePanel({ result }) {
 
 export function ResultDisplay({ result, showShare = true }) {
   const isStructuredResult = result.result && typeof result.result === "object";
+  const score = result.score ?? result.result?.clarityScore;
 
   return (
     <div className="tool-result">
       <div className="section-title-row">
         <h2>The verdict</h2>
       </div>
-      <ScoreGauge score={result.score} />
+      <ScoreGauge score={score} />
       {isStructuredResult ? (
         <StructuredResult content={result.result} />
       ) : (
